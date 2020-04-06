@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My Awesome Weather</title>
+    <link rel="icon" type="image/png" href="/media/weather_icon3.png" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+
+    <!--Styling of the web page-->
+    <style>
+        [data-theme="dark"] {
+        background-color: #111 !important;
+        color: #eee;
+        }
+
+        [data-theme="dark"] .bg-light {
+        background-color: #333 !important;
+        }
+
+        [data-theme="dark"] .bg-white {
+        background-color: #000 !important;
+        }
+
+        [data-theme="dark"] .bg-black {
+        background-color: #eee !important;
+        }
+    </style>
+
+</head>
+
+<body>
+    <section class="hero is-primary">
+        <div class="hero-body" style="background-color: #0b7d8f;">
+            <div class="container">
+                <h1 class="title">
+                    Want to know the weather of your city?
+                </h1>
+            </div>
+            <div class="custom-control custom-switch ml-4">
+                <input type="checkbox" class="custom-control-input" id="darkSwitch">
+                <label class="custom-control-label" for="darkSwitch">Dark Mode</label>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="field has-addons">
+                            <div class="control is-expanded" style="border-color: cornflowerblue;">
+                                {{ form.name }}
+                            </div>
+                            <div class="control">
+                                <button type="submit" class="btn btn-outline-primary ml-3" style="border-radius: 15px;">
+                                    Add City
+                                </button>
+                            </div>
+                        </div>
+                        {% if message %}
+                            <div class="notification {{ message_class }}">{{ message }}</div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    {% for city_weather in weather_data %}
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-50x50">
+                                    <img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <span class="title">{{ city_weather.city }}</span>
+                                        <br>
+                                        <span class="subtitle">{{ city_weather.temperature }}° F</span>
+                                        <br> {{ city_weather.description }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="media-right">
+                                <a href="{% url 'delete_city' city_weather.city %}">
+                                    <button class="delete"></button>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+<!--   <footer class="footer">
+    </footer> -->
+    <script>
+        const darkSwitch = document.getElementById('darkSwitch');
+        window.addEventListener('load', () => {
+        if (darkSwitch) {
+            initTheme();
+            darkSwitch.addEventListener('change', () => {
+            resetTheme();
+            });
+        }
+        });
+        function initTheme() {
+        const darkThemeSelected =
+            localStorage.getItem('darkSwitch') !== null &&
+            localStorage.getItem('darkSwitch') === 'dark';
+        darkSwitch.checked = darkThemeSelected;
+        darkThemeSelected ? document.body.setAttribute('data-theme', 'dark') :
+            document.body.removeAttribute('data-theme');
+        }
+        function resetTheme() {
+        if (darkSwitch.checked) {
+            document.body.setAttribute('data-theme', 'dark');
+            localStorage.setItem('darkSwitch', 'dark');
+        } else {
+            document.body.removeAttribute('data-theme');
+            localStorage.removeItem('darkSwitch');
+        }
+        }
+    </script>
+</body>
+</html>
