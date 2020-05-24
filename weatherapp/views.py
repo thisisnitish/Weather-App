@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 # Create your views here.
 
 def index(request):
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=f5f13c3f6d997b396795738b674115cc'
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=YOUR_API_KEY'
     
     err_msg = ''
     message = ''
